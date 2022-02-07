@@ -75,9 +75,11 @@ B<-t> reverses the album order.
 
 B<-p> prevents the inclusion of full-sized panoramas.
 
-B<-n> I<NAME> sets the album name, i.e. the title in the browser window.
-
 B<--index> I<URL> is the location for the index/back button.
+
+B<--keywords> I<TITLE> is the keywords for the website.
+
+B<--author> I<TITLE> author of the website.
 
 The following three options add meta tags for previews on social media. They
 must all three be specified, if at all.
@@ -403,6 +405,8 @@ my $do_blur = 1;
 my $indexUrl = undef;
 my %captions = map { $_ => 1} qw{txt xmp exif cmt};
 my @captions = keys %captions;
+my $galleryAuthor = '';
+my $galleryKeywords = '';
 my $galleryTitle = '';
 my $galleryDescription = '';
 my $galleryUrl = '';
@@ -421,7 +425,6 @@ my $sha = Digest::SHA->new($alg);
 my $odata = { data => [] };
 my $dir;
 my $out;
-my $name;
 my $aprops;
 my $adata;
 my $zipfile;
@@ -510,7 +513,6 @@ sub write_json {
   $j->{version} = $VERSION;
   $j->{timestamp} = time();
   $j->{timecreated} = sprintf "%s", scalar localtime $j->{timestamp};
-  $j->{name} = $name if $name;
   $j->{download} = $fdownload if $zipfile && -f $zipfile;
   $j->{index} = $indexUrl if $indexUrl;
   write_binary($f, encode_json($j));
@@ -616,7 +618,6 @@ sub print_help {
   -t                    do not time-sort
   -r                    reverse album order
   -p                    do not automatically include full-sized panoramas
-  -n "ALBUM_NAME"       set album name (title in browser window)
   -d                    skip creation of a full album zip file for download
   -f                    improve thumbnail cutting by performing face detection
   --noblur              skip blurry backdrop generation (just dark noise)
@@ -628,6 +629,8 @@ sub print_help {
   --link-orig           copy method (hard,sym,ref,copy); default: $copy_method
   --viewdir             directory containing $me CSS/JavaScript ($viewdir)
   --index URL           URL location for the index/back button
+  --keywords "KEYWORDS" comma-separated list of keywords
+  --author "AUTHOR"     author name
   --version             output current $me version ($VERSION)
   Add meta tags for Facebook/Twitter (must be specified all or none):
   --url URL             URL of gallery
@@ -648,7 +651,6 @@ GetOptions(
   'i' => sub { $include = 1; },
   'o' => sub { $orient = 0; },
   'k' => sub { $use_orig = 1; },
-  'n=s' => sub { $name = decode(locale => shift); },
   'p' => sub { $fullpano = 0; },
   'r' => sub { $revsort = 1; },
   's' => sub { $slim = 1; },
@@ -660,10 +662,12 @@ GetOptions(
   'min-thumb=s' => sub { @minthumb = parse_wh(@_); },
   'no-sRGB' => sub { $sRGB = 0; },
   'quality=i' => sub { $imgq = parse_int($_[0], $_[1], 0, 100); },
-  'index=s' => sub { $indexUrl = decode(locale => shift); },
-  'title=s' => sub { $galleryTitle = decode(locale => shift); },
-  'description=s' => sub { $galleryDescription = decode(locale => shift); },
-  'url=s' => sub { $galleryUrl = decode(locale => shift); },
+  'index=s' => sub { $indexUrl = decode(locale => $_[1]); },
+  'keywords=s' => sub { $galleryKeywords = decode(locale => $_[1]); },
+  'author=s' => sub { $galleryAuthor = decode(locale => $_[1]); },
+  'title=s' => sub { $galleryTitle = decode(locale => $_[1]); },
+  'description=s' => sub { $galleryDescription = decode(locale => $_[1]); },
+  'url=s' => sub { $galleryUrl = decode(locale => $_[1]); },
   'link-orig:s' => sub { $copy_method = parse_copy_method($_[0], $_[1]); },
   'viewdir:s' => \$viewdir,
 );
@@ -776,7 +780,6 @@ if (-f $json_file) {
     printf "None of the %d found image files are new\n", scalar @files if @files;
   }
   @files = @newfiles;
-  $name = $odata->{name} if $odata->{name} && !$name;
   # The files to delete are in %ofiles, which is based on $odata from the JSON file.
   # With this information, we can delete the appropriate entries from the JSON file.
   my @deleted = values %ofiles; # "imgs/P3111190.jpg"
@@ -1205,6 +1208,11 @@ if ($galleryTitle && $galleryDescription && $galleryUrl) {
   # default to the first image
   my $galleryImage = $adata->{data}->[0]->{img}->[0];
   $html = qq{
+    <title>$galleryTitle</title>
+    <link rel="icon" href="data:,">
+    <meta name="description" content="$galleryDescription">
+    <meta name="keywords" content="$galleryKeywords">
+    <meta name="author" content="$galleryAuthor">
     <!-- for Facebook -->
     <meta property="og:title" content="$galleryTitle" />
     <meta property="og:description" content="$galleryDescription" />

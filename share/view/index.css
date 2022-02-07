@@ -163,7 +163,7 @@ img
   display: none;
   position: absolute;
   right: 0;
-  bottom: 5%;
+  bottom: 2%;
   padding: 0.5em 5% 0.5em 10%;
 }
 
@@ -182,7 +182,7 @@ img
 @media (max-height: 60em)
 {
   #caption #title { font-size: 5vh }
-  #caption #desc { font-size: 2.5vh }
+  #caption #desc { font-size: 2vh }
 }
 
 @media (max-height: 30em)

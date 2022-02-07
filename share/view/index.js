@@ -497,8 +497,8 @@ function setupHeader()
     img.inject(el);
     el.inject(ehdr);
   }
-  if(imgs.data[eidx].date)
-    ehdr.adopt(new Element('span', { 'title': 'EXIF timestamp', 'html': imgs.data[eidx].date }));
+  // if(imgs.data[eidx].date)
+  //   ehdr.adopt(new Element('span', { 'title': 'EXIF timestamp', 'html': imgs.data[eidx].date }));
   el = new Element('a', { 'title': 'Overview', 'href': 'view/overview.html' });
   el.set('html', '<img src="view/overview.png"/>');
   ehdr.adopt(el);
@@ -711,7 +711,6 @@ function initGallery(data)
 {
   // prepare the data
   imgs = data;
-  if(imgs.name) document.title = imgs.name;
   imgs.captions = false;
   capst = 'normal';
   for(var i = 0; i != imgs.data.length; ++i)
@@ -863,7 +862,7 @@ function initGallery(data)
 function initFailure()
 {
   emain = $('gallery');
-  emain.set('html', "<h2>Cannot load gallery data :'(</h2>");
+  emain.set('html', "<h2>Cannot load gallery data</h2>");
   emain.setStyles(
   {
     'background': 'inherit',
