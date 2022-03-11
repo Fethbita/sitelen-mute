@@ -692,7 +692,7 @@ if (!-d $absDir) {
 } elsif (!-d $absOut) {
   make_path($absOut) || fatal "Failed to create output directory $absOut";
 } elsif (!is_a_gallery($absOut)) {
-  fatal "output dir '$absOut' exists, but doesn't look like a ${me} dir";
+  # fatal "output dir '$absOut' exists, but doesn't look like a ${me} dir";
 }
 
 $zipfile = catfile($absOut, $fdownload);
