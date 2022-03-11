@@ -155,7 +155,7 @@ security reasons (the "same-origin policy"; learn more about it on Wikipedia).
 If you have Python installed, a quick way to test the gallery locally is to run
 the following inside the gallery:
 
-    python -m SimpleHTTPServer 8000
+    python -m http.server
 
 This serves all the files from `http://localhost:8000`.
 
