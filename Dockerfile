@@ -16,4 +16,10 @@ VOLUME [ "/pictures" ]
 VOLUME [ "/gallery" ]
 
 COPY ./docker-entrypoint.sh /
+
+RUN addgroup -g 1000 -S app && \
+    adduser -u 1000 -S app -G app
+
+USER app
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
