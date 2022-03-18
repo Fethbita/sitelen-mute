@@ -13,3 +13,4 @@ MANIFEST
 MYMETA.yml
 /t/gallery/
 /t/album2/
+script/.venv/

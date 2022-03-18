@@ -510,6 +510,7 @@ sub write_json {
     $j->{$_} = $jh->{$_} if exists $jh->{$_};
   }
   $j->{data} = [ sort { $a->{stamp} <=> $b->{stamp} } @{$jh->{data}}, @$ja ];
+  $j->{data} = [ reverse @{$j->{data}} ] if $revsort;
   $j->{version} = $VERSION;
   $j->{timestamp} = time();
   $j->{timecreated} = sprintf "%s", scalar localtime $j->{timestamp};
